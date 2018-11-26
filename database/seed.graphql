@@ -1,0 +1,70 @@
+mutation {
+  telesur: createService(data: {
+    name: "teleSUR",
+    streams: {
+      create: [
+        { name: "teleSUR HD" }
+        { name: "teleSUR HD II" }
+      ]
+    }
+  }) {
+    id
+  }
+  
+  telesurenglish: createService(data: {
+    name: "teleSUR English",
+    streams: {
+      create: [
+        { name: "teleSUR English" }
+        { name: "teleSUR English II" }
+      ]
+    }
+  }) {
+    id
+  }
+  
+  l00: createLabel(data: { slug: "prog-noticias", name: "Programa", value: "Noticias teleSUR" }) { id }
+  l01: createLabel(data: { slug: "prog-dossier", name: "Programa", value: "Dossier" }) { id }
+  l02: createLabel(data: { slug: "prog-impacto", name: "Programa", value: "Impacto Económico" }) { id }
+
+  l03: createLabel(data: { slug: "show-dossier", name: "Show", value: "Dossier" }) { id }
+  l04: createLabel(data: { slug: "show-interviews", name: "Show", value: "Interviews From Mexico" }) { id }
+  l05: createLabel(data: { slug: "show-fts", name: "Show", value: "From The South" }) { id }
+
+  l06: createLabel(data: { slug: "tema-mx2018", name: "Tema", value: "Elecciones México 2018" }) { id }
+  l07: createLabel(data: { slug: "cat-economia", name: "Categoría", value: "Economía" }) { id }
+  l09: createLabel(data: { slug: "cat-deportes", name: "Categoría", value: "Deportes" }) { id }
+  
+  l10: createLabel(data: { slug: "corr-aissa", name: "Corresponsal", value: "Aissa García" }) { id }
+  
+  l11: createLabel(data: { slug: "editor-nacho", name: "Editor", value: "Nacho" }) { id }
+  l12: createLabel(data: { slug: "editor-luis", name: "Editor", value: "Jorge" }) { id }
+  
+  sch01: createSchedule(
+    data: {
+      duration: 30
+      startTimes: { set: ["10:00", "14:00"] }
+      weekdays: { set: [MONDAY, TUESDAY, FRIDAY] }
+      stream: { connect: { name: "teleSUR HD" } }
+      defaultLabels: {
+        connect: [{ slug: "show-fts" }, { slug: "editor-luis" }]
+      }
+    }
+  ){
+    id
+  }
+
+  sch02: createSchedule(
+    data: {
+      duration: 60
+      startTimes: { set: ["12:00"] }
+      weekdays: { set: [SATURDAY] }
+      stream: { connect: { name: "teleSUR HD" } }
+      defaultLabels: {
+        connect: [{ slug: "editor-nacho" }, { slug: "tema-mx2018" }]
+      }
+    }
+  ){
+    id
+  }
+}

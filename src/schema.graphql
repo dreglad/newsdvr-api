@@ -1,0 +1,30 @@
+# import Store, Stream, Fragment from "./generated/prisma.graphql"
+
+type Query {
+  stores: [Store!]!
+  post(id: ID!): Post
+}
+
+type Clip {
+  playlist: String!
+}
+
+type Mutation {
+  addFragment(strt: DateTime!, windowDuration: Int!, offset: Int, duration: Int): Fragment!
+
+
+  addFragment(start: DateTime, duration: Int)
+  adjustFragment(fragmentId: ID!, newStart: DateTime, newEnd: DateTime): Fragment!
+
+  addLabel(FragmentId: ID!, name: String!, value: String, labelId: ID): Label
+  removeLabel(FragmentId: ID!, name: String, labelId: ID): Label
+
+  lockFragment(FragmentId: ID!, reason: String ): Fragment
+  unlockFragment(FragmentId: ID!):
+
+  refineFragment(fragmentId: ID!, newStart: newEnd:)
+  cancelConversion()
+  createDraft(title: String!, text: String): Post
+  deletePost(id: ID!): Post
+  publish(id: ID!): Post
+}

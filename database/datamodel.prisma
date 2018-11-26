@@ -1,0 +1,88 @@
+type Service {
+  id: ID! @unique
+  name: String! @unique
+  streams: [Stream!]!
+}
+
+type Stream {
+  id: ID! @unique
+  name: String! @unique
+  metadata: Json
+  stores: [Store!]!
+  schedules: [Schedule!]!
+}
+
+type Store {
+  id: ID! @unique
+  start: DateTime
+  end: DateTime
+  stream: Stream!
+  fragments: [Fragment!]!
+  exclusions: [Exclusion!]!
+}
+
+type Exclusion {
+  id: ID! @unique
+  start: DateTime!
+  offset: Int! @default(value: 0)
+  duration: Int!
+  store: [Store!]!
+}
+
+type Fragment {
+  id: ID! @unique
+  start: DateTime!
+  offset: Int! @default(value: 0)
+  duration: Int!
+  metadata: Json
+  store: [Store!]!
+  labels: [Label!]!
+}
+
+type Label {
+  id: ID! @unique
+  slug: String! @unique
+  name: String!
+  value: String!
+  fragments: [Fragment!]!
+  schedules: [Schedule!]!
+}
+
+type Schedule {
+  id: ID! @unique
+  freq: FREQ! @default(value: MINUTELY)
+  duration: Int!
+  count: Int @default(value: 1)
+  startTimes: [String!]!
+  weekdays: [Weekday!]!
+  defaultLabels: [Label!]!
+  stream: Stream!
+}
+
+type Rule {
+  id: ID! @unique
+  name: String
+  metadata: Json
+  start: DateTime
+  end: DateTime
+  includedAnd: [Label!]! @relation(name: "IncludedAndLabelRuleRelation")
+  includedOr: [Label!]! @relation(name: "IncludedOrLabelRuleRelation")
+  excludedAnd: [Label!]! @relation(name: "ExcludedAndLabelRuleRelation")
+  excludedOr: [Label!]! @relation(name: "ExcludedOrLabelRuleRelation")
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WENDSDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum FREQ {
+  MINUTELY
+  SECONDLY
+  DAILY
+}
