@@ -1,30 +1,41 @@
-# import Store, Stream, Fragment from "./generated/prisma.graphql"
+# import Query.* from "./generated/graphql-schema/prisma.graphql"
 
 type Query {
-  stores: [Store!]!
-  post(id: ID!): Post
+  """Get availabl0e recording stores from a given Stream"""
+  stores(streamId: ID!): [Store!]!
+  """Get store details for a given stream and store name"""
+  store(streamId: ID!, name: String!): Store
 }
 
 type Clip {
   playlist: String!
 }
 
+"""Continuous recroding available for fragment extraction from a given stream"""
+type Store @cacheControl(maxAge: 30) {
+  """Name that identifies this store in the recordings provider"""
+  name: String!
+  start: DateTime @cacheControl(maxAge: 10)
+  end: DateTime @cacheControl(maxAge: 10)
+  stream: Stream!
+  fragments: [Fragment!]!
+  exclusions: [Exclusion!]!
+}
+
 type Mutation {
-  addFragment(strt: DateTime!, windowDuration: Int!, offset: Int, duration: Int): Fragment!
-
-
-  addFragment(start: DateTime, duration: Int)
+  addFragment(start: DateTime, duration: Int): Fragment!
   adjustFragment(fragmentId: ID!, newStart: DateTime, newEnd: DateTime): Fragment!
+  # addLabel(FragmentId: ID!, name: String!, value: String, labelId: ID): Label
+  # removeLabel(FragmentId: ID!, name: String, labelId: ID): Label
+}
 
-  addLabel(FragmentId: ID!, name: String!, value: String, labelId: ID): Label
-  removeLabel(FragmentId: ID!, name: String, labelId: ID): Label
+# Apollo Cache Control schema hints
+directive @cacheControl(
+  maxAge: Int,
+  scope: CacheControlScope
+) on OBJECT | FIELD_DEFINITION
 
-  lockFragment(FragmentId: ID!, reason: String ): Fragment
-  unlockFragment(FragmentId: ID!):
-
-  refineFragment(fragmentId: ID!, newStart: newEnd:)
-  cancelConversion()
-  createDraft(title: String!, text: String): Post
-  deletePost(id: ID!): Post
-  publish(id: ID!): Post
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
 }

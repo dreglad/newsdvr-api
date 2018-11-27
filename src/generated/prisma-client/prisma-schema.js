@@ -23,10 +23,6 @@ type AggregateService {
   count: Int!
 }
 
-type AggregateStore {
-  count: Int!
-}
-
 type AggregateStream {
   count: Int!
 }
@@ -42,7 +38,8 @@ type Exclusion {
   start: DateTime!
   offset: Int!
   duration: Int!
-  store(where: StoreWhereInput, orderBy: StoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Store!]
+  storeName: String
+  stream: Stream!
 }
 
 type ExclusionConnection {
@@ -55,18 +52,20 @@ input ExclusionCreateInput {
   start: DateTime!
   offset: Int
   duration: Int!
-  store: StoreCreateManyWithoutExclusionsInput
+  storeName: String
+  stream: StreamCreateOneWithoutExclusionsInput!
 }
 
-input ExclusionCreateManyWithoutStoreInput {
-  create: [ExclusionCreateWithoutStoreInput!]
+input ExclusionCreateManyWithoutStreamInput {
+  create: [ExclusionCreateWithoutStreamInput!]
   connect: [ExclusionWhereUniqueInput!]
 }
 
-input ExclusionCreateWithoutStoreInput {
+input ExclusionCreateWithoutStreamInput {
   start: DateTime!
   offset: Int
   duration: Int!
+  storeName: String
 }
 
 type ExclusionEdge {
@@ -83,6 +82,8 @@ enum ExclusionOrderByInput {
   offset_DESC
   duration_ASC
   duration_DESC
+  storeName_ASC
+  storeName_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -94,6 +95,7 @@ type ExclusionPreviousValues {
   start: DateTime!
   offset: Int!
   duration: Int!
+  storeName: String
 }
 
 type ExclusionSubscriptionPayload {
@@ -118,39 +120,42 @@ input ExclusionUpdateInput {
   start: DateTime
   offset: Int
   duration: Int
-  store: StoreUpdateManyWithoutExclusionsInput
+  storeName: String
+  stream: StreamUpdateOneRequiredWithoutExclusionsInput
 }
 
 input ExclusionUpdateManyMutationInput {
   start: DateTime
   offset: Int
   duration: Int
+  storeName: String
 }
 
-input ExclusionUpdateManyWithoutStoreInput {
-  create: [ExclusionCreateWithoutStoreInput!]
+input ExclusionUpdateManyWithoutStreamInput {
+  create: [ExclusionCreateWithoutStreamInput!]
   delete: [ExclusionWhereUniqueInput!]
   connect: [ExclusionWhereUniqueInput!]
   disconnect: [ExclusionWhereUniqueInput!]
-  update: [ExclusionUpdateWithWhereUniqueWithoutStoreInput!]
-  upsert: [ExclusionUpsertWithWhereUniqueWithoutStoreInput!]
+  update: [ExclusionUpdateWithWhereUniqueWithoutStreamInput!]
+  upsert: [ExclusionUpsertWithWhereUniqueWithoutStreamInput!]
 }
 
-input ExclusionUpdateWithoutStoreDataInput {
+input ExclusionUpdateWithoutStreamDataInput {
   start: DateTime
   offset: Int
   duration: Int
+  storeName: String
 }
 
-input ExclusionUpdateWithWhereUniqueWithoutStoreInput {
+input ExclusionUpdateWithWhereUniqueWithoutStreamInput {
   where: ExclusionWhereUniqueInput!
-  data: ExclusionUpdateWithoutStoreDataInput!
+  data: ExclusionUpdateWithoutStreamDataInput!
 }
 
-input ExclusionUpsertWithWhereUniqueWithoutStoreInput {
+input ExclusionUpsertWithWhereUniqueWithoutStreamInput {
   where: ExclusionWhereUniqueInput!
-  update: ExclusionUpdateWithoutStoreDataInput!
-  create: ExclusionCreateWithoutStoreInput!
+  update: ExclusionUpdateWithoutStreamDataInput!
+  create: ExclusionCreateWithoutStreamInput!
 }
 
 input ExclusionWhereInput {
@@ -192,9 +197,21 @@ input ExclusionWhereInput {
   duration_lte: Int
   duration_gt: Int
   duration_gte: Int
-  store_every: StoreWhereInput
-  store_some: StoreWhereInput
-  store_none: StoreWhereInput
+  storeName: String
+  storeName_not: String
+  storeName_in: [String!]
+  storeName_not_in: [String!]
+  storeName_lt: String
+  storeName_lte: String
+  storeName_gt: String
+  storeName_gte: String
+  storeName_contains: String
+  storeName_not_contains: String
+  storeName_starts_with: String
+  storeName_not_starts_with: String
+  storeName_ends_with: String
+  storeName_not_ends_with: String
+  stream: StreamWhereInput
   AND: [ExclusionWhereInput!]
   OR: [ExclusionWhereInput!]
   NOT: [ExclusionWhereInput!]
@@ -209,8 +226,8 @@ type Fragment {
   start: DateTime!
   offset: Int!
   duration: Int!
-  metadata: Json
-  store(where: StoreWhereInput, orderBy: StoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Store!]
+  storeName: String
+  stream: Stream!
   labels(where: LabelWhereInput, orderBy: LabelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Label!]
 }
 
@@ -224,8 +241,8 @@ input FragmentCreateInput {
   start: DateTime!
   offset: Int
   duration: Int!
-  metadata: Json
-  store: StoreCreateManyWithoutFragmentsInput
+  storeName: String
+  stream: StreamCreateOneWithoutFragmentsInput!
   labels: LabelCreateManyWithoutFragmentsInput
 }
 
@@ -234,8 +251,8 @@ input FragmentCreateManyWithoutLabelsInput {
   connect: [FragmentWhereUniqueInput!]
 }
 
-input FragmentCreateManyWithoutStoreInput {
-  create: [FragmentCreateWithoutStoreInput!]
+input FragmentCreateManyWithoutStreamInput {
+  create: [FragmentCreateWithoutStreamInput!]
   connect: [FragmentWhereUniqueInput!]
 }
 
@@ -243,15 +260,15 @@ input FragmentCreateWithoutLabelsInput {
   start: DateTime!
   offset: Int
   duration: Int!
-  metadata: Json
-  store: StoreCreateManyWithoutFragmentsInput
+  storeName: String
+  stream: StreamCreateOneWithoutFragmentsInput!
 }
 
-input FragmentCreateWithoutStoreInput {
+input FragmentCreateWithoutStreamInput {
   start: DateTime!
   offset: Int
   duration: Int!
-  metadata: Json
+  storeName: String
   labels: LabelCreateManyWithoutFragmentsInput
 }
 
@@ -269,8 +286,8 @@ enum FragmentOrderByInput {
   offset_DESC
   duration_ASC
   duration_DESC
-  metadata_ASC
-  metadata_DESC
+  storeName_ASC
+  storeName_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -282,7 +299,7 @@ type FragmentPreviousValues {
   start: DateTime!
   offset: Int!
   duration: Int!
-  metadata: Json
+  storeName: String
 }
 
 type FragmentSubscriptionPayload {
@@ -307,8 +324,8 @@ input FragmentUpdateInput {
   start: DateTime
   offset: Int
   duration: Int
-  metadata: Json
-  store: StoreUpdateManyWithoutFragmentsInput
+  storeName: String
+  stream: StreamUpdateOneRequiredWithoutFragmentsInput
   labels: LabelUpdateManyWithoutFragmentsInput
 }
 
@@ -316,7 +333,7 @@ input FragmentUpdateManyMutationInput {
   start: DateTime
   offset: Int
   duration: Int
-  metadata: Json
+  storeName: String
 }
 
 input FragmentUpdateManyWithoutLabelsInput {
@@ -328,28 +345,28 @@ input FragmentUpdateManyWithoutLabelsInput {
   upsert: [FragmentUpsertWithWhereUniqueWithoutLabelsInput!]
 }
 
-input FragmentUpdateManyWithoutStoreInput {
-  create: [FragmentCreateWithoutStoreInput!]
+input FragmentUpdateManyWithoutStreamInput {
+  create: [FragmentCreateWithoutStreamInput!]
   delete: [FragmentWhereUniqueInput!]
   connect: [FragmentWhereUniqueInput!]
   disconnect: [FragmentWhereUniqueInput!]
-  update: [FragmentUpdateWithWhereUniqueWithoutStoreInput!]
-  upsert: [FragmentUpsertWithWhereUniqueWithoutStoreInput!]
+  update: [FragmentUpdateWithWhereUniqueWithoutStreamInput!]
+  upsert: [FragmentUpsertWithWhereUniqueWithoutStreamInput!]
 }
 
 input FragmentUpdateWithoutLabelsDataInput {
   start: DateTime
   offset: Int
   duration: Int
-  metadata: Json
-  store: StoreUpdateManyWithoutFragmentsInput
+  storeName: String
+  stream: StreamUpdateOneRequiredWithoutFragmentsInput
 }
 
-input FragmentUpdateWithoutStoreDataInput {
+input FragmentUpdateWithoutStreamDataInput {
   start: DateTime
   offset: Int
   duration: Int
-  metadata: Json
+  storeName: String
   labels: LabelUpdateManyWithoutFragmentsInput
 }
 
@@ -358,9 +375,9 @@ input FragmentUpdateWithWhereUniqueWithoutLabelsInput {
   data: FragmentUpdateWithoutLabelsDataInput!
 }
 
-input FragmentUpdateWithWhereUniqueWithoutStoreInput {
+input FragmentUpdateWithWhereUniqueWithoutStreamInput {
   where: FragmentWhereUniqueInput!
-  data: FragmentUpdateWithoutStoreDataInput!
+  data: FragmentUpdateWithoutStreamDataInput!
 }
 
 input FragmentUpsertWithWhereUniqueWithoutLabelsInput {
@@ -369,10 +386,10 @@ input FragmentUpsertWithWhereUniqueWithoutLabelsInput {
   create: FragmentCreateWithoutLabelsInput!
 }
 
-input FragmentUpsertWithWhereUniqueWithoutStoreInput {
+input FragmentUpsertWithWhereUniqueWithoutStreamInput {
   where: FragmentWhereUniqueInput!
-  update: FragmentUpdateWithoutStoreDataInput!
-  create: FragmentCreateWithoutStoreInput!
+  update: FragmentUpdateWithoutStreamDataInput!
+  create: FragmentCreateWithoutStreamInput!
 }
 
 input FragmentWhereInput {
@@ -414,9 +431,21 @@ input FragmentWhereInput {
   duration_lte: Int
   duration_gt: Int
   duration_gte: Int
-  store_every: StoreWhereInput
-  store_some: StoreWhereInput
-  store_none: StoreWhereInput
+  storeName: String
+  storeName_not: String
+  storeName_in: [String!]
+  storeName_not_in: [String!]
+  storeName_lt: String
+  storeName_lte: String
+  storeName_gt: String
+  storeName_gte: String
+  storeName_contains: String
+  storeName_not_contains: String
+  storeName_starts_with: String
+  storeName_not_starts_with: String
+  storeName_ends_with: String
+  storeName_not_ends_with: String
+  stream: StreamWhereInput
   labels_every: LabelWhereInput
   labels_some: LabelWhereInput
   labels_none: LabelWhereInput
@@ -742,12 +771,6 @@ type Mutation {
   upsertService(where: ServiceWhereUniqueInput!, create: ServiceCreateInput!, update: ServiceUpdateInput!): Service!
   deleteService(where: ServiceWhereUniqueInput!): Service
   deleteManyServices(where: ServiceWhereInput): BatchPayload!
-  createStore(data: StoreCreateInput!): Store!
-  updateStore(data: StoreUpdateInput!, where: StoreWhereUniqueInput!): Store
-  updateManyStores(data: StoreUpdateManyMutationInput!, where: StoreWhereInput): BatchPayload!
-  upsertStore(where: StoreWhereUniqueInput!, create: StoreCreateInput!, update: StoreUpdateInput!): Store!
-  deleteStore(where: StoreWhereUniqueInput!): Store
-  deleteManyStores(where: StoreWhereInput): BatchPayload!
   createStream(data: StreamCreateInput!): Stream!
   updateStream(data: StreamUpdateInput!, where: StreamWhereUniqueInput!): Stream
   updateManyStreams(data: StreamUpdateManyMutationInput!, where: StreamWhereInput): BatchPayload!
@@ -792,9 +815,6 @@ type Query {
   service(where: ServiceWhereUniqueInput!): Service
   services(where: ServiceWhereInput, orderBy: ServiceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Service]!
   servicesConnection(where: ServiceWhereInput, orderBy: ServiceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceConnection!
-  store(where: StoreWhereUniqueInput!): Store
-  stores(where: StoreWhereInput, orderBy: StoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Store]!
-  storesConnection(where: StoreWhereInput, orderBy: StoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StoreConnection!
   stream(where: StreamWhereUniqueInput!): Stream
   streams(where: StreamWhereInput, orderBy: StreamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Stream]!
   streamsConnection(where: StreamWhereInput, orderBy: StreamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StreamConnection!
@@ -968,7 +988,7 @@ type Schedule {
   duration: Int!
   count: Int
   startTimes: [String!]!
-  byWeekday: [Weekday!]!
+  weekdays: [Weekday!]!
   defaultLabels(where: LabelWhereInput, orderBy: LabelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Label!]
   stream: Stream!
 }
@@ -979,16 +999,12 @@ type ScheduleConnection {
   aggregate: AggregateSchedule!
 }
 
-input ScheduleCreatebyWeekdayInput {
-  set: [Weekday!]
-}
-
 input ScheduleCreateInput {
   freq: FREQ
   duration: Int!
   count: Int
   startTimes: ScheduleCreatestartTimesInput
-  byWeekday: ScheduleCreatebyWeekdayInput
+  weekdays: ScheduleCreateweekdaysInput
   defaultLabels: LabelCreateManyWithoutSchedulesInput
   stream: StreamCreateOneWithoutSchedulesInput!
 }
@@ -1007,12 +1023,16 @@ input ScheduleCreatestartTimesInput {
   set: [String!]
 }
 
+input ScheduleCreateweekdaysInput {
+  set: [Weekday!]
+}
+
 input ScheduleCreateWithoutDefaultLabelsInput {
   freq: FREQ
   duration: Int!
   count: Int
   startTimes: ScheduleCreatestartTimesInput
-  byWeekday: ScheduleCreatebyWeekdayInput
+  weekdays: ScheduleCreateweekdaysInput
   stream: StreamCreateOneWithoutSchedulesInput!
 }
 
@@ -1021,7 +1041,7 @@ input ScheduleCreateWithoutStreamInput {
   duration: Int!
   count: Int
   startTimes: ScheduleCreatestartTimesInput
-  byWeekday: ScheduleCreatebyWeekdayInput
+  weekdays: ScheduleCreateweekdaysInput
   defaultLabels: LabelCreateManyWithoutSchedulesInput
 }
 
@@ -1051,7 +1071,7 @@ type SchedulePreviousValues {
   duration: Int!
   count: Int
   startTimes: [String!]!
-  byWeekday: [Weekday!]!
+  weekdays: [Weekday!]!
 }
 
 type ScheduleSubscriptionPayload {
@@ -1072,16 +1092,12 @@ input ScheduleSubscriptionWhereInput {
   NOT: [ScheduleSubscriptionWhereInput!]
 }
 
-input ScheduleUpdatebyWeekdayInput {
-  set: [Weekday!]
-}
-
 input ScheduleUpdateInput {
   freq: FREQ
   duration: Int
   count: Int
   startTimes: ScheduleUpdatestartTimesInput
-  byWeekday: ScheduleUpdatebyWeekdayInput
+  weekdays: ScheduleUpdateweekdaysInput
   defaultLabels: LabelUpdateManyWithoutSchedulesInput
   stream: StreamUpdateOneRequiredWithoutSchedulesInput
 }
@@ -1091,7 +1107,7 @@ input ScheduleUpdateManyMutationInput {
   duration: Int
   count: Int
   startTimes: ScheduleUpdatestartTimesInput
-  byWeekday: ScheduleUpdatebyWeekdayInput
+  weekdays: ScheduleUpdateweekdaysInput
 }
 
 input ScheduleUpdateManyWithoutDefaultLabelsInput {
@@ -1116,12 +1132,16 @@ input ScheduleUpdatestartTimesInput {
   set: [String!]
 }
 
+input ScheduleUpdateweekdaysInput {
+  set: [Weekday!]
+}
+
 input ScheduleUpdateWithoutDefaultLabelsDataInput {
   freq: FREQ
   duration: Int
   count: Int
   startTimes: ScheduleUpdatestartTimesInput
-  byWeekday: ScheduleUpdatebyWeekdayInput
+  weekdays: ScheduleUpdateweekdaysInput
   stream: StreamUpdateOneRequiredWithoutSchedulesInput
 }
 
@@ -1130,7 +1150,7 @@ input ScheduleUpdateWithoutStreamDataInput {
   duration: Int
   count: Int
   startTimes: ScheduleUpdatestartTimesInput
-  byWeekday: ScheduleUpdatebyWeekdayInput
+  weekdays: ScheduleUpdateweekdaysInput
   defaultLabels: LabelUpdateManyWithoutSchedulesInput
 }
 
@@ -1311,254 +1331,13 @@ input ServiceWhereUniqueInput {
   name: String
 }
 
-type Store {
-  id: ID!
-  start: DateTime
-  end: DateTime
-  stream: Stream!
-  fragments(where: FragmentWhereInput, orderBy: FragmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Fragment!]
-  exclusions(where: ExclusionWhereInput, orderBy: ExclusionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Exclusion!]
-}
-
-type StoreConnection {
-  pageInfo: PageInfo!
-  edges: [StoreEdge]!
-  aggregate: AggregateStore!
-}
-
-input StoreCreateInput {
-  start: DateTime
-  end: DateTime
-  stream: StreamCreateOneWithoutStoresInput!
-  fragments: FragmentCreateManyWithoutStoreInput
-  exclusions: ExclusionCreateManyWithoutStoreInput
-}
-
-input StoreCreateManyWithoutExclusionsInput {
-  create: [StoreCreateWithoutExclusionsInput!]
-  connect: [StoreWhereUniqueInput!]
-}
-
-input StoreCreateManyWithoutFragmentsInput {
-  create: [StoreCreateWithoutFragmentsInput!]
-  connect: [StoreWhereUniqueInput!]
-}
-
-input StoreCreateManyWithoutStreamInput {
-  create: [StoreCreateWithoutStreamInput!]
-  connect: [StoreWhereUniqueInput!]
-}
-
-input StoreCreateWithoutExclusionsInput {
-  start: DateTime
-  end: DateTime
-  stream: StreamCreateOneWithoutStoresInput!
-  fragments: FragmentCreateManyWithoutStoreInput
-}
-
-input StoreCreateWithoutFragmentsInput {
-  start: DateTime
-  end: DateTime
-  stream: StreamCreateOneWithoutStoresInput!
-  exclusions: ExclusionCreateManyWithoutStoreInput
-}
-
-input StoreCreateWithoutStreamInput {
-  start: DateTime
-  end: DateTime
-  fragments: FragmentCreateManyWithoutStoreInput
-  exclusions: ExclusionCreateManyWithoutStoreInput
-}
-
-type StoreEdge {
-  node: Store!
-  cursor: String!
-}
-
-enum StoreOrderByInput {
-  id_ASC
-  id_DESC
-  start_ASC
-  start_DESC
-  end_ASC
-  end_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type StorePreviousValues {
-  id: ID!
-  start: DateTime
-  end: DateTime
-}
-
-type StoreSubscriptionPayload {
-  mutation: MutationType!
-  node: Store
-  updatedFields: [String!]
-  previousValues: StorePreviousValues
-}
-
-input StoreSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: StoreWhereInput
-  AND: [StoreSubscriptionWhereInput!]
-  OR: [StoreSubscriptionWhereInput!]
-  NOT: [StoreSubscriptionWhereInput!]
-}
-
-input StoreUpdateInput {
-  start: DateTime
-  end: DateTime
-  stream: StreamUpdateOneRequiredWithoutStoresInput
-  fragments: FragmentUpdateManyWithoutStoreInput
-  exclusions: ExclusionUpdateManyWithoutStoreInput
-}
-
-input StoreUpdateManyMutationInput {
-  start: DateTime
-  end: DateTime
-}
-
-input StoreUpdateManyWithoutExclusionsInput {
-  create: [StoreCreateWithoutExclusionsInput!]
-  delete: [StoreWhereUniqueInput!]
-  connect: [StoreWhereUniqueInput!]
-  disconnect: [StoreWhereUniqueInput!]
-  update: [StoreUpdateWithWhereUniqueWithoutExclusionsInput!]
-  upsert: [StoreUpsertWithWhereUniqueWithoutExclusionsInput!]
-}
-
-input StoreUpdateManyWithoutFragmentsInput {
-  create: [StoreCreateWithoutFragmentsInput!]
-  delete: [StoreWhereUniqueInput!]
-  connect: [StoreWhereUniqueInput!]
-  disconnect: [StoreWhereUniqueInput!]
-  update: [StoreUpdateWithWhereUniqueWithoutFragmentsInput!]
-  upsert: [StoreUpsertWithWhereUniqueWithoutFragmentsInput!]
-}
-
-input StoreUpdateManyWithoutStreamInput {
-  create: [StoreCreateWithoutStreamInput!]
-  delete: [StoreWhereUniqueInput!]
-  connect: [StoreWhereUniqueInput!]
-  disconnect: [StoreWhereUniqueInput!]
-  update: [StoreUpdateWithWhereUniqueWithoutStreamInput!]
-  upsert: [StoreUpsertWithWhereUniqueWithoutStreamInput!]
-}
-
-input StoreUpdateWithoutExclusionsDataInput {
-  start: DateTime
-  end: DateTime
-  stream: StreamUpdateOneRequiredWithoutStoresInput
-  fragments: FragmentUpdateManyWithoutStoreInput
-}
-
-input StoreUpdateWithoutFragmentsDataInput {
-  start: DateTime
-  end: DateTime
-  stream: StreamUpdateOneRequiredWithoutStoresInput
-  exclusions: ExclusionUpdateManyWithoutStoreInput
-}
-
-input StoreUpdateWithoutStreamDataInput {
-  start: DateTime
-  end: DateTime
-  fragments: FragmentUpdateManyWithoutStoreInput
-  exclusions: ExclusionUpdateManyWithoutStoreInput
-}
-
-input StoreUpdateWithWhereUniqueWithoutExclusionsInput {
-  where: StoreWhereUniqueInput!
-  data: StoreUpdateWithoutExclusionsDataInput!
-}
-
-input StoreUpdateWithWhereUniqueWithoutFragmentsInput {
-  where: StoreWhereUniqueInput!
-  data: StoreUpdateWithoutFragmentsDataInput!
-}
-
-input StoreUpdateWithWhereUniqueWithoutStreamInput {
-  where: StoreWhereUniqueInput!
-  data: StoreUpdateWithoutStreamDataInput!
-}
-
-input StoreUpsertWithWhereUniqueWithoutExclusionsInput {
-  where: StoreWhereUniqueInput!
-  update: StoreUpdateWithoutExclusionsDataInput!
-  create: StoreCreateWithoutExclusionsInput!
-}
-
-input StoreUpsertWithWhereUniqueWithoutFragmentsInput {
-  where: StoreWhereUniqueInput!
-  update: StoreUpdateWithoutFragmentsDataInput!
-  create: StoreCreateWithoutFragmentsInput!
-}
-
-input StoreUpsertWithWhereUniqueWithoutStreamInput {
-  where: StoreWhereUniqueInput!
-  update: StoreUpdateWithoutStreamDataInput!
-  create: StoreCreateWithoutStreamInput!
-}
-
-input StoreWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  start: DateTime
-  start_not: DateTime
-  start_in: [DateTime!]
-  start_not_in: [DateTime!]
-  start_lt: DateTime
-  start_lte: DateTime
-  start_gt: DateTime
-  start_gte: DateTime
-  end: DateTime
-  end_not: DateTime
-  end_in: [DateTime!]
-  end_not_in: [DateTime!]
-  end_lt: DateTime
-  end_lte: DateTime
-  end_gt: DateTime
-  end_gte: DateTime
-  stream: StreamWhereInput
-  fragments_every: FragmentWhereInput
-  fragments_some: FragmentWhereInput
-  fragments_none: FragmentWhereInput
-  exclusions_every: ExclusionWhereInput
-  exclusions_some: ExclusionWhereInput
-  exclusions_none: ExclusionWhereInput
-  AND: [StoreWhereInput!]
-  OR: [StoreWhereInput!]
-  NOT: [StoreWhereInput!]
-}
-
-input StoreWhereUniqueInput {
-  id: ID
-}
-
 type Stream {
   id: ID!
   name: String!
   metadata: Json
-  stores(where: StoreWhereInput, orderBy: StoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Store!]
   schedules(where: ScheduleWhereInput, orderBy: ScheduleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Schedule!]
+  exclusions(where: ExclusionWhereInput, orderBy: ExclusionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Exclusion!]
+  fragments(where: FragmentWhereInput, orderBy: FragmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Fragment!]
 }
 
 type StreamConnection {
@@ -1570,8 +1349,9 @@ type StreamConnection {
 input StreamCreateInput {
   name: String!
   metadata: Json
-  stores: StoreCreateManyWithoutStreamInput
   schedules: ScheduleCreateManyWithoutStreamInput
+  exclusions: ExclusionCreateManyWithoutStreamInput
+  fragments: FragmentCreateManyWithoutStreamInput
 }
 
 input StreamCreateManyInput {
@@ -1579,26 +1359,40 @@ input StreamCreateManyInput {
   connect: [StreamWhereUniqueInput!]
 }
 
+input StreamCreateOneWithoutExclusionsInput {
+  create: StreamCreateWithoutExclusionsInput
+  connect: StreamWhereUniqueInput
+}
+
+input StreamCreateOneWithoutFragmentsInput {
+  create: StreamCreateWithoutFragmentsInput
+  connect: StreamWhereUniqueInput
+}
+
 input StreamCreateOneWithoutSchedulesInput {
   create: StreamCreateWithoutSchedulesInput
   connect: StreamWhereUniqueInput
 }
 
-input StreamCreateOneWithoutStoresInput {
-  create: StreamCreateWithoutStoresInput
-  connect: StreamWhereUniqueInput
+input StreamCreateWithoutExclusionsInput {
+  name: String!
+  metadata: Json
+  schedules: ScheduleCreateManyWithoutStreamInput
+  fragments: FragmentCreateManyWithoutStreamInput
+}
+
+input StreamCreateWithoutFragmentsInput {
+  name: String!
+  metadata: Json
+  schedules: ScheduleCreateManyWithoutStreamInput
+  exclusions: ExclusionCreateManyWithoutStreamInput
 }
 
 input StreamCreateWithoutSchedulesInput {
   name: String!
   metadata: Json
-  stores: StoreCreateManyWithoutStreamInput
-}
-
-input StreamCreateWithoutStoresInput {
-  name: String!
-  metadata: Json
-  schedules: ScheduleCreateManyWithoutStreamInput
+  exclusions: ExclusionCreateManyWithoutStreamInput
+  fragments: FragmentCreateManyWithoutStreamInput
 }
 
 type StreamEdge {
@@ -1646,15 +1440,17 @@ input StreamSubscriptionWhereInput {
 input StreamUpdateDataInput {
   name: String
   metadata: Json
-  stores: StoreUpdateManyWithoutStreamInput
   schedules: ScheduleUpdateManyWithoutStreamInput
+  exclusions: ExclusionUpdateManyWithoutStreamInput
+  fragments: FragmentUpdateManyWithoutStreamInput
 }
 
 input StreamUpdateInput {
   name: String
   metadata: Json
-  stores: StoreUpdateManyWithoutStreamInput
   schedules: ScheduleUpdateManyWithoutStreamInput
+  exclusions: ExclusionUpdateManyWithoutStreamInput
+  fragments: FragmentUpdateManyWithoutStreamInput
 }
 
 input StreamUpdateManyInput {
@@ -1671,6 +1467,20 @@ input StreamUpdateManyMutationInput {
   metadata: Json
 }
 
+input StreamUpdateOneRequiredWithoutExclusionsInput {
+  create: StreamCreateWithoutExclusionsInput
+  update: StreamUpdateWithoutExclusionsDataInput
+  upsert: StreamUpsertWithoutExclusionsInput
+  connect: StreamWhereUniqueInput
+}
+
+input StreamUpdateOneRequiredWithoutFragmentsInput {
+  create: StreamCreateWithoutFragmentsInput
+  update: StreamUpdateWithoutFragmentsDataInput
+  upsert: StreamUpsertWithoutFragmentsInput
+  connect: StreamWhereUniqueInput
+}
+
 input StreamUpdateOneRequiredWithoutSchedulesInput {
   create: StreamCreateWithoutSchedulesInput
   update: StreamUpdateWithoutSchedulesDataInput
@@ -1678,23 +1488,25 @@ input StreamUpdateOneRequiredWithoutSchedulesInput {
   connect: StreamWhereUniqueInput
 }
 
-input StreamUpdateOneRequiredWithoutStoresInput {
-  create: StreamCreateWithoutStoresInput
-  update: StreamUpdateWithoutStoresDataInput
-  upsert: StreamUpsertWithoutStoresInput
-  connect: StreamWhereUniqueInput
+input StreamUpdateWithoutExclusionsDataInput {
+  name: String
+  metadata: Json
+  schedules: ScheduleUpdateManyWithoutStreamInput
+  fragments: FragmentUpdateManyWithoutStreamInput
+}
+
+input StreamUpdateWithoutFragmentsDataInput {
+  name: String
+  metadata: Json
+  schedules: ScheduleUpdateManyWithoutStreamInput
+  exclusions: ExclusionUpdateManyWithoutStreamInput
 }
 
 input StreamUpdateWithoutSchedulesDataInput {
   name: String
   metadata: Json
-  stores: StoreUpdateManyWithoutStreamInput
-}
-
-input StreamUpdateWithoutStoresDataInput {
-  name: String
-  metadata: Json
-  schedules: ScheduleUpdateManyWithoutStreamInput
+  exclusions: ExclusionUpdateManyWithoutStreamInput
+  fragments: FragmentUpdateManyWithoutStreamInput
 }
 
 input StreamUpdateWithWhereUniqueNestedInput {
@@ -1702,14 +1514,19 @@ input StreamUpdateWithWhereUniqueNestedInput {
   data: StreamUpdateDataInput!
 }
 
+input StreamUpsertWithoutExclusionsInput {
+  update: StreamUpdateWithoutExclusionsDataInput!
+  create: StreamCreateWithoutExclusionsInput!
+}
+
+input StreamUpsertWithoutFragmentsInput {
+  update: StreamUpdateWithoutFragmentsDataInput!
+  create: StreamCreateWithoutFragmentsInput!
+}
+
 input StreamUpsertWithoutSchedulesInput {
   update: StreamUpdateWithoutSchedulesDataInput!
   create: StreamCreateWithoutSchedulesInput!
-}
-
-input StreamUpsertWithoutStoresInput {
-  update: StreamUpdateWithoutStoresDataInput!
-  create: StreamCreateWithoutStoresInput!
 }
 
 input StreamUpsertWithWhereUniqueNestedInput {
@@ -1747,12 +1564,15 @@ input StreamWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  stores_every: StoreWhereInput
-  stores_some: StoreWhereInput
-  stores_none: StoreWhereInput
   schedules_every: ScheduleWhereInput
   schedules_some: ScheduleWhereInput
   schedules_none: ScheduleWhereInput
+  exclusions_every: ExclusionWhereInput
+  exclusions_some: ExclusionWhereInput
+  exclusions_none: ExclusionWhereInput
+  fragments_every: FragmentWhereInput
+  fragments_some: FragmentWhereInput
+  fragments_none: FragmentWhereInput
   AND: [StreamWhereInput!]
   OR: [StreamWhereInput!]
   NOT: [StreamWhereInput!]
@@ -1770,18 +1590,17 @@ type Subscription {
   rule(where: RuleSubscriptionWhereInput): RuleSubscriptionPayload
   schedule(where: ScheduleSubscriptionWhereInput): ScheduleSubscriptionPayload
   service(where: ServiceSubscriptionWhereInput): ServiceSubscriptionPayload
-  store(where: StoreSubscriptionWhereInput): StoreSubscriptionPayload
   stream(where: StreamSubscriptionWhereInput): StreamSubscriptionPayload
 }
 
 enum Weekday {
-  MONDAY
-  TUESDAY
-  WENDSDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
+  MO
+  TU
+  WE
+  TH
+  FR
+  SA
+  SU
 }
 `
       }

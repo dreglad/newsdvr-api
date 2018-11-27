@@ -33,10 +33,6 @@ var models = [
     embedded: false
   },
   {
-    name: "Store",
-    embedded: false
-  },
-  {
     name: "Stream",
     embedded: false
   },

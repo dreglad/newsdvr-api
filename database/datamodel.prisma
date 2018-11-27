@@ -8,17 +8,9 @@ type Stream {
   id: ID! @unique
   name: String! @unique
   metadata: Json
-  stores: [Store!]!
   schedules: [Schedule!]!
-}
-
-type Store {
-  id: ID! @unique
-  start: DateTime
-  end: DateTime
-  stream: Stream!
-  fragments: [Fragment!]!
   exclusions: [Exclusion!]!
+  fragments: [Fragment!]!
 }
 
 type Exclusion {
@@ -26,7 +18,8 @@ type Exclusion {
   start: DateTime!
   offset: Int! @default(value: 0)
   duration: Int!
-  store: [Store!]!
+  storeName: String
+  stream: Stream!
 }
 
 type Fragment {
@@ -34,8 +27,8 @@ type Fragment {
   start: DateTime!
   offset: Int! @default(value: 0)
   duration: Int!
-  metadata: Json
-  store: [Store!]!
+  storeName: String
+  stream: Stream!
   labels: [Label!]!
 }
 
@@ -71,18 +64,28 @@ type Rule {
   excludedOr: [Label!]! @relation(name: "ExcludedOrLabelRuleRelation")
 }
 
-enum Weekday {
-  MONDAY
-  TUESDAY
-  WENDSDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
+enum FREQ {
+  """Every given minutes"""
+  MINUTELY
+  """Every given seconds"""
+  SECONDLY
+  """Every given days"""
+  DAILY
 }
 
-enum FREQ {
-  MINUTELY
-  SECONDLY
-  DAILY
+enum Weekday {
+  """Monday"""
+  MO
+  """Tuesday"""
+  TU
+  """Wendsday"""
+  WE
+  """Thursday"""
+  TH
+  """Friday"""
+  FR
+  """Saturday"""
+  SA
+  """Sunday"""
+  SU
 }
