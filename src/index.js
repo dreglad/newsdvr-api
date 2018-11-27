@@ -42,13 +42,9 @@ if (process.env.ENGINE_API_KEY) {
 
   const engine = new ApolloEngine({
     apiKey: process.env.ENGINE_API_KEY,
-    // logging: {
-    //   level: "DEBUG"
-    // },
-    // Specify behavior for how the Engine Proxy should connect to the
-    // GraphQL origin (your Node GraphQL server). While the Proxy does
-    // support multiple origins, most users will only put one origin
-    // in this array.
+    logging: {
+      level: process.env.LOGGING_LEVEL || "INFO"
+    },
     frontends: [{
       overrideGraphqlResponseHeaders: {
         'Access-Control-Allow-Origin': '*'
@@ -56,26 +52,10 @@ if (process.env.ENGINE_API_KEY) {
     }],
     origins: [
       {
-        // If you are using the apollo-link-batch-http package to combine
-        // multiple GraphQL requests into a single HTTP request, set this
-        // to ensure that the Engine Proxy sends them to your Node web
-        // server as a single request as well. (If you don't set this,
-        // the Proxy will split it apart into individual HTTP requests.)
         supportsBatch: true,
-        // Amount of time to wait for your Node GraphQL server to return
-        // a response before timing out. Defaults to "30s". Specified as
-        // a string containing a number and a unit such as "ms" or "s".
-        requestTimeout: "120s",
-        // HTTP-specific options. (The options above also apply to other
-        // origin types such as Lambda.)
+        requestTimeout: "120s"
       }
     ]
-  })
-
-  engine.on("error", err => {
-    console.log("There was an error starting the server or Engine.");
-    console.error(err);
-    process.exit(1);
   })
 
   engine.listen({
