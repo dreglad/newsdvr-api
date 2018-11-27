@@ -29,7 +29,7 @@ mutation {
               {
                 start: "2018-10-10T10:00:00Z"
                 duration: 600
-                storeName: "telesur-es-store1"
+                storeName: "stream1-store1"
                 labels: {
                   connect: [
                     { slug: "editor-nacho" }, { slug: "corr-aissa" }, { slug: "tema-mx2018" },
@@ -38,9 +38,9 @@ mutation {
                 }
               },
               {
-                start: "2018-10-10T10:20:00Z"
+                start: "2018-10-10T20:00:00Z"
                 duration: 300
-                storeName: "telesur-es-store1"
+                storeName: "stream1-store2"
               }
             ]
           }
