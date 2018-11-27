@@ -1,11 +1,22 @@
 const { forwardTo } = require('prisma-binding');
+const maxBy = require('lodash/maxBy');
+const parse = require('date-fns/parse');
 const { stores } = require('./mocks');
+
 
 const resolvers = {
   Query: {
     async stores(_, args, { prisma, storeLoader }) {
       const stream = await prisma.stream(args.stream);
       return stream && stores.filter(store => store.stream === stream.name);
+    },
+
+    async store(_, { where }, { prisma, storeLoader }) {
+      const stream = await prisma.stream(where.stream);
+      const streamStores = stores.filter(store => store.stream === stream.name)
+      return where.name
+        ? streamStores.find(store => store.name === where.name)
+        : maxBy(streamStores, store => parse(store.end))
     },
 
     fragmentsConnection: forwardTo('db'),

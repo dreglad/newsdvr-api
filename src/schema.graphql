@@ -1,15 +1,14 @@
 # import Query.* from "./generated/graphql-schema/prisma.graphql"
 
 type Query {
-  """Get availabl0e recording stores from a given Stream"""
+  """Get availabl0e recording stores from a given stream"""
   stores(stream: StreamWhereUniqueInput!): [Store]
+
+  """Get store by nae or most recent for a given stream"""
+  store(where: StoreWhereUniqueInput!): Store
 }
 
-type Clip {
-  playlist: String!
-}
-
-"""Continuous recroding available for fragment extraction from a given stream"""
+"""Continuous recroding available from a given stream for fragment extraction"""
 type Store @cacheControl(maxAge: 30) {
   """Name that identifies this store in the recordings provider"""
   name: String!
@@ -21,10 +20,18 @@ type Store @cacheControl(maxAge: 30) {
 }
 
 type Mutation {
-  addFragment(start: DateTime, duration: Int): Fragment!
+  addFragment(store: DateTime, duration: Int, storeName: String): Fragment!
+
   adjustFragment(fragmentId: ID!, newStart: DateTime, newEnd: DateTime): Fragment!
-  # addLabel(FragmentId: ID!, name: String!, value: String, labelId: ID): Label
-  # removeLabel(FragmentId: ID!, name: String, labelId: ID): Label
+
+  addLabel(fragment: FragmentWhereUniqueInput!, name: String!, value: String): Label!
+  removeLabel(fragment: FragmentWhereUniqueInput!, name: String!): Label!
+}
+
+input StoreWhereUniqueInput {
+  stream: StreamWhereUniqueInput!
+  """If no name is provided, mot recent store will be selected"""
+  name: String
 }
 
 # Apollo Cache Control schema hints
