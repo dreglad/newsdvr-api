@@ -23,7 +23,7 @@ mutation {
     streams: {
       create: [
         {
-          name: "teleSUR HD"
+          name: "teleSUR HD I"
           fragments: {
             create: [
               {
@@ -58,7 +58,7 @@ mutation {
     name: "teleSUR English",
     streams: {
       create: [
-        { name: "teleSUR English" }
+        { name: "teleSUR English I" }
         { name: "teleSUR English II" }
       ]
     }
@@ -71,7 +71,7 @@ mutation {
       duration: 30
       startTimes: { set: ["10:00", "14:00"] }
       weekdays: { set: [MO, TU, FR] }
-      stream: { connect: { name: "teleSUR HD" } }
+      stream: { connect: { name: "teleSUR HD I" } }
       defaultLabels: {
         connect: [{ slug: "show-fts" }, { slug: "editor-luis" }]
       }
@@ -85,7 +85,7 @@ mutation {
       duration: 60
       startTimes: { set: ["12:00"] }
       weekdays: { set: [SA] }
-      stream: { connect: { name: "teleSUR HD" } }
+      stream: { connect: { name: "teleSUR HD I" } }
       defaultLabels: {
         connect: [{ slug: "editor-nacho" }, { slug: "tema-mx2018" }]
       }

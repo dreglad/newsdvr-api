@@ -3,13 +3,9 @@ const { stores } = require('./mocks');
 
 const resolvers = {
   Query: {
-
-    stores (_, args, { db }, info) {
-      return stores;
-    },
-    store (_, { serviceId, name, fragment }, { prisma, service }, info) {
-      const storeName = fragment.storeName || name;
-      return stores.find(store => store.name === storeName);
+    async stores(_, args, { prisma, storeLoader }) {
+      const stream = await prisma.stream(args.stream);
+      return stream && stores.filter(store => store.stream === stream.name);
     },
 
     fragmentsConnection: forwardTo('db'),
@@ -42,14 +38,31 @@ const resolvers = {
   },
 
   Store: {
-    fragments (store, args, { db }, info) {
+    fragments(store, args, { db }, info) {
       return db.query.fragments({
         ...args,
         where: {
           storeName: store.name
         }
       }, info);
-    }
+    },
+
+    stream(store, _, { db }, info) {
+      return db.query.stream({
+        where: { name: store.stream }
+      }, info);
+    },
+
+    exclusions(store, args, { db }, info) {
+      return db.query.exclusions({
+        ...args,
+        where: {
+          storeName: store.name
+        }
+      }, info);
+    },
+
+
   }
 };
 

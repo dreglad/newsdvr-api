@@ -2,9 +2,7 @@
 
 type Query {
   """Get availabl0e recording stores from a given Stream"""
-  stores(streamId: ID!): [Store!]!
-  """Get store details for a given stream and store name"""
-  store(streamId: ID!, name: String!): Store
+  stores(stream: StreamWhereUniqueInput!): [Store]
 }
 
 type Clip {
